@@ -1,4 +1,3 @@
-
 // ==UserScript==
 // @name         DataSpark导出Excel
 // @namespace    http://tampermonkey.net/
