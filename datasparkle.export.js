@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         DataSpark导出Excel
+// @name         DataSparkle导出Excel
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.1.1
 // @description  Final Update
 // @author       zhujin
 // @match        https://www.datasparkle.net/trackInsight/*
