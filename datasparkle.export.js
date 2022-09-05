@@ -2,31 +2,22 @@
 // ==UserScript==
 // @name         DataSpark导出Excel
 // @namespace    http://tampermonkey.net/
-// @version      0.1.17
+// @version      0.1
 // @description  Final Update
 // @author       zhujin
 // @match        https://www.datasparkle.net/trackInsight/*
-// @require     https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/3.6.0/jquery.min.js
+// @require      https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/3.6.0/jquery.min.js
 // @require      http://cdn.staticfile.org/xlsx/0.16.1/xlsx.mini.min.js
 // @grant        GM_xmlhttpRequest
 // ==/UserScript==
 
 var xmlExportContent = {traffic:[], source:[]};
-var yhplHTTPCount = 0;
 const EXCEL_TYPE_STORE_DETAIL = 0;
-const EXCEL_TYPE_STORE_COMMENT = 1;
-const EXCEL_TYPE_STORE_SEARCH_WORD_ZONE = 2;
-const EXCEL_TYPE_STORE_PROMOTION = 3;
-const EXCEL_TYPE_STORE_GOODS = 4;
-const EXCEL_TYPE_STORE_SEARCH_WORD_STORE = 5;
 
-const SEARCH_WORD_ROW = 30;
-const SEARCH_WORD_ZONE_API_COUNT = 2;
-const SEARCH_WORD_STORE_API_COUNT = 3;
+
 var yhpl_acct_id = "";
 (function() {
     'use strict';
-    yhplHTTPCount = 0;
     addButton();
     console.log('enter')
 })();
@@ -63,36 +54,10 @@ function getButtonIdByType(type){
     switch (type){
         case EXCEL_TYPE_STORE_DETAIL:
             return 'yhplExport';
-        case EXCEL_TYPE_STORE_COMMENT:
-            return 'yhplComment';
-        case EXCEL_TYPE_STORE_SEARCH_WORD_ZONE:
-            return 'yhplSearchZone';
-        case EXCEL_TYPE_STORE_SEARCH_WORD_STORE:
-            return 'yhplSearchStore';
-        case EXCEL_TYPE_STORE_PROMOTION:
-            return 'yhplPromotion';
-        case EXCEL_TYPE_STORE_GOODS:
-            return 'yhplGoods';
         default:
             return 'yhpl';
     }
 }
-
-
-function onStoreSuccessTypeDetail(stores){
-    var length = stores.length;
-    var totalRequestSize = length * 2;
-    for(var poi = 0; poi < length; poi++){
-        var child = stores[poi];
-        console.log(child.poiName+"," +child.id);
-        getStoreDetail(poi * 2, totalRequestSize, child.id, child.poiName);
-        getStoreTrafficSource(poi * 2 + 1, totalRequestSize, child.id, child.poiName);
-        yhplSleep();
-    }
-}
-
-
-
 
 async function yhplSleep() {
     await sleep(200)
@@ -103,13 +68,11 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms))
 }
 
-
 function onStoreError(type, e){
     console.log(e);
     console.log('onError');
 }
 function getStore(type){
-
     console.log('getStore enter type: '+type);
     var ths = $(".ant-table-thead th");
     xmlExportContent = {traffic:[], source:[]};
@@ -145,14 +108,6 @@ function getStore(type){
     showProgress(type,1,10);
 }
 
-function getStoreName(storeName, storeID){
-    if (storeID > 0){
-        return (storeName+"("+storeID+")");
-    } else {
-        return storeName;
-    }
-}
-
 function getRateString(rate){
     if (!rate){
         return "";
@@ -184,9 +139,6 @@ function parseJson(text){
     return node;
 }
 
-
-//endsegment 搜索热词
-//segment 营销分析
 function getDateString(d){
     var beginTime = []
     var month = d.getMonth() + 1;
@@ -203,7 +155,6 @@ function getFieldString(field){
 
 function showProgress(type, step, total){
     exportAsXLS(type, xmlExportContent);
-    
 }
 
 //segment excel
@@ -213,10 +164,8 @@ function exportAsXLS(type, table){
             var sheet = XLSX.utils.aoa_to_sheet(table.traffic);
             openDownloadDialog(sheet2blob([{sheet: sheet,name:'排行榜'}]), '排行榜.xlsx');
             break;
-        }
-       
+        } 
     }
-
 }
 function sheet2blob(sheets) {
     var sheetsSize = sheets.length;
