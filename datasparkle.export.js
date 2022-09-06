@@ -4,7 +4,7 @@
 // @version      0.1.1
 // @description  Final Update
 // @author       zhujin
-// @match        https://www.datasparkle.net/trackInsight/*
+// @match        https://www.datasparkle.net/*
 // @require      https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/3.6.0/jquery.min.js
 // @require      http://cdn.staticfile.org/xlsx/0.16.1/xlsx.mini.min.js
 // @grant        GM_xmlhttpRequest
@@ -13,34 +13,37 @@
 var xmlExportContent = {traffic:[], source:[]};
 const EXCEL_TYPE_STORE_DETAIL = 0;
 
-
+var LAST_LOCATION = "";
 var yhpl_acct_id = "";
 (function() {
     'use strict';
-    addButton();
-    console.log('enter')
+    document.body.onclick = function(){
+        console.log(window.location.href);
+        if(LAST_LOCATION!=window.location.href){
+            LAST_LOCATION = window.location.hre
+            if(window.location.href.indexOf("useLeaderboards")>0){
+                addButton();
+                console.log('enter')
+            }
+        }
+    };
 })();
 
 function addButton(){
-    var searchBtn = $(".ant-card-body button")[0];
-    var header = searchBtn.parentElement;
-    var button = document.createElement('BUTTON');
-    button.innerText = "导出";
-    button.onclick = ()=>{getStore(EXCEL_TYPE_STORE_DETAIL)};
-    button.id = getButtonIdByType(EXCEL_TYPE_STORE_DETAIL);
-    button.className = searchBtn.className;
-    $(button).css("margin-left","10px");
-    //header.appendChild(button);
+if($("#export_ext").length==0){
+    console.log('add btn')
 
     var obtn = $("._btn-download_a2o3c_43 button");
     //obtn[0].onclick = ()=>{getStore(EXCEL_TYPE_STORE_DETAIL)};
     var obtn2 = obtn.clone();
     obtn.parent().hide();
+    obtn2.attr("id","export_ext");
     obtn2.removeAttr("disabled");
     obtn2.css("cursor","pointer");
     obtn2.css("pointer-events","");
     obtn2.click(()=>{getStore(EXCEL_TYPE_STORE_DETAIL)});
     $("._switch-content_12887_71").append(obtn2[0]);
+}
 }
 function appendButton(parent, type, text){
     var bt = document.createElement('BUTTON');
@@ -93,7 +96,7 @@ function getStore(type){
             tds.each(function(tdidx){
                 if(tdidx>0&&tdidx<ths.length){
                     if(tdidx==2){
-                         row.push($("p:eq(1)",$(this)).text());
+                         row.push($("p:eq(0)",$(this)).text());
                     }else if(tdidx==4){
                           row.push($(this).text().replace(/\,/g,""));
                     }else{
